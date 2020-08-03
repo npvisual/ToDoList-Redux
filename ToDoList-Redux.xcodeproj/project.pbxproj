@@ -17,6 +17,7 @@
 		8E2F82EB24D38CAF007A6932 /* TaskList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2F82EA24D38CAF007A6932 /* TaskList.swift */; };
 		8E2F82ED24D38CBD007A6932 /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2F82EC24D38CBD007A6932 /* TaskItem.swift */; };
 		8EE303FF24D85EB400DE03BC /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE303FE24D85EB400DE03BC /* TaskService.swift */; };
+		8EE3040224D8702A00DE03BC /* Indexing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE3040124D8702A00DE03BC /* Indexing.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		8E2F82EA24D38CAF007A6932 /* TaskList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskList.swift; sourceTree = "<group>"; };
 		8E2F82EC24D38CBD007A6932 /* TaskItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItem.swift; sourceTree = "<group>"; };
 		8EE303FE24D85EB400DE03BC /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
+		8EE3040124D8702A00DE03BC /* Indexing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indexing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 		8E2F82B924D3895F007A6932 /* ToDoList-Redux */ = {
 			isa = PBXGroup;
 			children = (
+				8EE3040024D8700F00DE03BC /* Extensions */,
 				8EE303FD24D85E6200DE03BC /* Services */,
 				8E2F82E724D38982007A6932 /* Binders */,
 				8E2F82E624D3897C007A6932 /* Views */,
@@ -172,6 +175,14 @@
 				8EE303FE24D85EB400DE03BC /* TaskService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		8EE3040024D8700F00DE03BC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8EE3040124D8702A00DE03BC /* Indexing.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -306,6 +317,7 @@
 				8E2F82EB24D38CAF007A6932 /* TaskList.swift in Sources */,
 				8E2F82ED24D38CBD007A6932 /* TaskItem.swift in Sources */,
 				8EE303FF24D85EB400DE03BC /* TaskService.swift in Sources */,
+				8EE3040224D8702A00DE03BC /* Indexing.swift in Sources */,
 				8E2F82BD24D3895F007A6932 /* ContentView.swift in Sources */,
 				8E2F82E924D389A4007A6932 /* Task.swift in Sources */,
 				8E2F82BB24D3895F007A6932 /* ToDoList_ReduxApp.swift in Sources */,

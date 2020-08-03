@@ -9,13 +9,16 @@ import SwiftUI
 
 struct TaskItem: View {
     
-    var task: Task
+    @Binding var task: Task
     
     var body: some View {
         HStack {
             Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
                 .resizable()
-                .frame(width: 20, height: 20) // (12)
+                .frame(width: 20, height: 20)
+                .onTapGesture {
+                    task.completed.toggle()
+                }
             Text(task.title)
         }
     }
@@ -24,8 +27,9 @@ struct TaskItem: View {
 struct TaskItem_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TaskItem(task: testDataTasks[0])
-            TaskItem(task: testDataTasks[1])
-        }.previewLayout(.fixed(width: 300, height: 70))
+            TaskItem(task: .constant(TaskService().tasks[0]))
+            TaskItem(task: .constant(TaskService().tasks[1]))
+        }
+        .previewLayout(.fixed(width: 300, height: 70))
     }
 }

@@ -18,4 +18,15 @@ final class TaskService: ObservableObject {
     func removeCompleted() {
         tasks.removeAll { $0.completed }
     }
+    
+    #if DEBUG
+    init() {
+        tasks = [
+            Task(title: "Implement UI", priority: .medium, completed: true),
+            Task(title: "Connect to Firebase", priority: .medium, completed: false),
+            Task(title: "????", priority: .high, completed: false),
+            Task(title: "PROFIT!!!", priority: .high, completed: false)
+        ]
+    }
+    #endif
 }

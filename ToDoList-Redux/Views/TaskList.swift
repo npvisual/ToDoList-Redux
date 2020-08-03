@@ -9,18 +9,17 @@ import SwiftUI
 
 struct TaskList: View {
     
-    var tasks: [Task]
+    @EnvironmentObject var service: TaskService
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
                 List {
-                    ForEach (self.tasks) { task in
-                        TaskItem(task: task)
+                    ForEach (self.service.tasks.indexed(), id: \.1.id) { index, _ in
+                        TaskItem(task: self.$service.tasks[index])
                     }
-                    .onDelete { indexSet in
-                        // The rest of this function will be added later
-                    }
+                    .onDelete(perform: delete)
+                    .onMove(perform: move)
                 }
                 Button(action: {}) {
                     HStack {
@@ -34,12 +33,27 @@ struct TaskList: View {
                 .accentColor(Color(UIColor.systemRed))
             }
             .navigationBarTitle("Tasks")
+            .navigationBarItems(trailing: EditButton())
         }
+    }
+    
+    private func delete(_ indexes: IndexSet) {
+        service.tasks.remove(atOffsets: indexes)
+    }
+    
+    private func move(_ indexes: IndexSet, to offset: Int) {
+        service.tasks.move(fromOffsets: indexes, toOffset: offset)
+    }
+    
+    private func addTodo() {
+        let draft = ""
+        let newTodo = Task(title: draft, priority: .medium, completed: false)
+        service.tasks.insert(newTodo, at: 0)
     }
 }
 
 struct TaskList_Previews: PreviewProvider {
     static var previews: some View {
-        TaskList(tasks: testDataTasks)
+        TaskList().environmentObject(TaskService())
     }
 }
