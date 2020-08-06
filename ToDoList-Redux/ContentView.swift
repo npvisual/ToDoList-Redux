@@ -5,16 +5,23 @@
 //  Created by Nicolas Philippe on 7/30/20.
 //
 
-import SwiftUI
-
-struct ContentView: View {
-    var body: some View {
-        Text("Hello, world!").padding()
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+//import SwiftUI
+//import SwiftRex
+//import CombineRex
+//
+//struct ContentView: View {
+//    
+//    @ObservedObject var viewModel: ObservableViewModel<AppAction, AppState>
+//    
+//    var body: some View {
+//        TaskList(viewModel: TaskListViewModel.viewModel(store: viewModel.eraseToAnyStoreType()))
+//    }
+//    
+//    
+//}
+//
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView(viewModel: nil)
+//    }
+//}

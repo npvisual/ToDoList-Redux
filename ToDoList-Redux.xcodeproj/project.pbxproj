@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,7 +15,13 @@
 		8E2F82D824D38961007A6932 /* ToDoList_ReduxUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2F82D724D38961007A6932 /* ToDoList_ReduxUITests.swift */; };
 		8E2F82E924D389A4007A6932 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2F82E824D389A4007A6932 /* Task.swift */; };
 		8E2F82EB24D38CAF007A6932 /* TaskList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2F82EA24D38CAF007A6932 /* TaskList.swift */; };
-		8E2F82ED24D38CBD007A6932 /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2F82EC24D38CBD007A6932 /* TaskItem.swift */; };
+		8E2F82ED24D38CBD007A6932 /* CheckmarkCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2F82EC24D38CBD007A6932 /* CheckmarkCellView.swift */; };
+		8E5B2B8824DA0EF300B3C3A8 /* CombineRex in Frameworks */ = {isa = PBXBuildFile; productRef = 8E5B2B8724DA0EF300B3C3A8 /* CombineRex */; };
+		8E5B2B8A24DA194400B3C3A8 /* ReduxFramework.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5B2B8924DA194400B3C3A8 /* ReduxFramework.swift */; };
+		8E5B2B8D24DA4A0000B3C3A8 /* LoggerMiddleware in Frameworks */ = {isa = PBXBuildFile; productRef = 8E5B2B8C24DA4A0000B3C3A8 /* LoggerMiddleware */; };
+		8E5B2B8F24DA4D9700B3C3A8 /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5B2B8E24DA4D9700B3C3A8 /* TaskListViewModel.swift */; };
+		8EA052D024DB079B00BA0A07 /* TaskItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA052CF24DB079B00BA0A07 /* TaskItemViewModel.swift */; };
+		8ECAFD2024DB4DF700153719 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECAFD1F24DB4DF700153719 /* AppViewModel.swift */; };
 		8EE303FF24D85EB400DE03BC /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE303FE24D85EB400DE03BC /* TaskService.swift */; };
 		8EE3040224D8702A00DE03BC /* Indexing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE3040124D8702A00DE03BC /* Indexing.swift */; };
 /* End PBXBuildFile section */
@@ -52,7 +58,11 @@
 		8E2F82D924D38961007A6932 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8E2F82E824D389A4007A6932 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		8E2F82EA24D38CAF007A6932 /* TaskList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskList.swift; sourceTree = "<group>"; };
-		8E2F82EC24D38CBD007A6932 /* TaskItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItem.swift; sourceTree = "<group>"; };
+		8E2F82EC24D38CBD007A6932 /* CheckmarkCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkCellView.swift; sourceTree = "<group>"; };
+		8E5B2B8924DA194400B3C3A8 /* ReduxFramework.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReduxFramework.swift; sourceTree = "<group>"; };
+		8E5B2B8E24DA4D9700B3C3A8 /* TaskListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewModel.swift; sourceTree = "<group>"; };
+		8EA052CF24DB079B00BA0A07 /* TaskItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItemViewModel.swift; sourceTree = "<group>"; };
+		8ECAFD1F24DB4DF700153719 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		8EE303FE24D85EB400DE03BC /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
 		8EE3040124D8702A00DE03BC /* Indexing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indexing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -62,6 +72,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E5B2B8D24DA4A0000B3C3A8 /* LoggerMiddleware in Frameworks */,
+				8E5B2B8824DA0EF300B3C3A8 /* CombineRex in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +127,7 @@
 				8E2F82BE24D38960007A6932 /* Assets.xcassets */,
 				8E2F82C324D38961007A6932 /* Info.plist */,
 				8E2F82C024D38961007A6932 /* Preview Content */,
+				8E5B2B8924DA194400B3C3A8 /* ReduxFramework.swift */,
 			);
 			path = "ToDoList-Redux";
 			sourceTree = "<group>";
@@ -157,7 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				8E2F82EA24D38CAF007A6932 /* TaskList.swift */,
-				8E2F82EC24D38CBD007A6932 /* TaskItem.swift */,
+				8E2F82EC24D38CBD007A6932 /* CheckmarkCellView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -165,6 +178,9 @@
 		8E2F82E724D38982007A6932 /* Binders */ = {
 			isa = PBXGroup;
 			children = (
+				8ECAFD1F24DB4DF700153719 /* AppViewModel.swift */,
+				8E5B2B8E24DA4D9700B3C3A8 /* TaskListViewModel.swift */,
+				8EA052CF24DB079B00BA0A07 /* TaskItemViewModel.swift */,
 			);
 			path = Binders;
 			sourceTree = "<group>";
@@ -201,6 +217,10 @@
 			dependencies = (
 			);
 			name = "ToDoList-Redux";
+			packageProductDependencies = (
+				8E5B2B8724DA0EF300B3C3A8 /* CombineRex */,
+				8E5B2B8C24DA4A0000B3C3A8 /* LoggerMiddleware */,
+			);
 			productName = "ToDoList-Redux";
 			productReference = 8E2F82B724D3895F007A6932 /* ToDoList-Redux.app */;
 			productType = "com.apple.product-type.application";
@@ -219,6 +239,8 @@
 				8E2F82CA24D38961007A6932 /* PBXTargetDependency */,
 			);
 			name = "ToDoList-ReduxTests";
+			packageProductDependencies = (
+			);
 			productName = "ToDoList-ReduxTests";
 			productReference = 8E2F82C824D38961007A6932 /* ToDoList-ReduxTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -272,6 +294,10 @@
 				Base,
 			);
 			mainGroup = 8E2F82AE24D3895F007A6932;
+			packageReferences = (
+				8E5B2B8624DA0EF300B3C3A8 /* XCRemoteSwiftPackageReference "SwiftRex" */,
+				8E5B2B8B24DA4A0000B3C3A8 /* XCRemoteSwiftPackageReference "LoggerMiddleware" */,
+			);
 			productRefGroup = 8E2F82B824D3895F007A6932 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -314,11 +340,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E5B2B8F24DA4D9700B3C3A8 /* TaskListViewModel.swift in Sources */,
 				8E2F82EB24D38CAF007A6932 /* TaskList.swift in Sources */,
-				8E2F82ED24D38CBD007A6932 /* TaskItem.swift in Sources */,
+				8E2F82ED24D38CBD007A6932 /* CheckmarkCellView.swift in Sources */,
 				8EE303FF24D85EB400DE03BC /* TaskService.swift in Sources */,
 				8EE3040224D8702A00DE03BC /* Indexing.swift in Sources */,
 				8E2F82BD24D3895F007A6932 /* ContentView.swift in Sources */,
+				8EA052D024DB079B00BA0A07 /* TaskItemViewModel.swift in Sources */,
+				8E5B2B8A24DA194400B3C3A8 /* ReduxFramework.swift in Sources */,
+				8ECAFD2024DB4DF700153719 /* AppViewModel.swift in Sources */,
 				8E2F82E924D389A4007A6932 /* Task.swift in Sources */,
 				8E2F82BB24D3895F007A6932 /* ToDoList_ReduxApp.swift in Sources */,
 			);
@@ -640,6 +670,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8E5B2B8624DA0EF300B3C3A8 /* XCRemoteSwiftPackageReference "SwiftRex" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftRex/SwiftRex";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.7.4;
+			};
+		};
+		8E5B2B8B24DA4A0000B3C3A8 /* XCRemoteSwiftPackageReference "LoggerMiddleware" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftRex/LoggerMiddleware";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8E5B2B8724DA0EF300B3C3A8 /* CombineRex */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8E5B2B8624DA0EF300B3C3A8 /* XCRemoteSwiftPackageReference "SwiftRex" */;
+			productName = CombineRex;
+		};
+		8E5B2B8C24DA4A0000B3C3A8 /* LoggerMiddleware */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8E5B2B8B24DA4A0000B3C3A8 /* XCRemoteSwiftPackageReference "LoggerMiddleware" */;
+			productName = LoggerMiddleware;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8E2F82AF24D3895F007A6932 /* Project object */;
 }

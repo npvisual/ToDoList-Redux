@@ -6,20 +6,23 @@
 //
 
 import SwiftUI
+import CombineRex
 
 struct TaskList: View {
     
-    @EnvironmentObject var service: TaskService
+    @ObservedObject var viewModel: ObservableViewModel<TaskListViewModel.ViewEvent, TaskListViewModel.ViewState>
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
                 List {
-                    ForEach (self.service.tasks.indexed(), id: \.1.id) { index, _ in
-                        TaskItem(task: self.$service.tasks[index])
+                    ForEach(self.viewModel.state.tasks, id: \.id) { (item: Task) in
+                        CheckmarkCellView(title: item.title,
+                                          imageName: item.completed ? "checkmark.circle.fill" : "circle") {
+                            viewModel.dispatch(.tapComplete(id: item.id))}
                     }
                     .onDelete(perform: delete)
-                    .onMove(perform: move)
+//                    .onMove(perform: move)
                 }
                 Button(action: {}) {
                     HStack {
@@ -38,22 +41,32 @@ struct TaskList: View {
     }
     
     private func delete(_ indexes: IndexSet) {
-        service.tasks.remove(atOffsets: indexes)
+        viewModel.dispatch(.tapDelete(indexes: indexes))
     }
     
-    private func move(_ indexes: IndexSet, to offset: Int) {
-        service.tasks.move(fromOffsets: indexes, toOffset: offset)
-    }
+//    private func move(_ indexes: IndexSet, to offset: Int) {
+//        service.tasks.move(fromOffsets: indexes, toOffset: offset)
+//    }
     
     private func addTodo() {
-        let draft = ""
-        let newTodo = Task(title: draft, priority: .medium, completed: false)
-        service.tasks.insert(newTodo, at: 0)
+        viewModel.dispatch(.tapAdd(title: "Type something in..."))
     }
 }
 
+#if DEBUG
 struct TaskList_Previews: PreviewProvider {
     static var previews: some View {
-        TaskList().environmentObject(TaskService())
+        Group {
+            PreviewWrapper()
+        }
+    }
+    
+    struct PreviewWrapper: View {
+        @State var viewModel: ObservableViewModel = ObservableViewModel<TaskListViewModel.ViewEvent, TaskListViewModel.ViewState>.mock(state: TaskListViewModel.ViewState.mock)
+        
+        var body: some View {
+            TaskList(viewModel: viewModel)
+        }
     }
 }
+#endif
