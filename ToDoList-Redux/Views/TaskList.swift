@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+
+import SwiftRex
 import CombineRex
 
 struct TaskList: View {
@@ -29,8 +31,8 @@ struct TaskList: View {
                             }).asObservableViewModel(initialState: CheckmarkCellContainerView.State(title: "", imageName: "circle"))
                         return CheckmarkCellContainerView(viewModel: cellViewModel)
                     }
-                    .onDelete(perform: delete)
-//                    .onMove(perform: move)
+                    .onDelete { viewModel.dispatch(.remove($0)) }
+                    .onMove { viewModel.dispatch(.move($0, $1)) }
                 }
                 Button(action: {}) {
                     HStack {
@@ -48,14 +50,6 @@ struct TaskList: View {
         }
     }
     
-    private func delete(_ indexes: IndexSet) {
-        viewModel.dispatch(.remove(indexes))
-    }
-    
-//    private func move(_ indexes: IndexSet, to offset: Int) {
-//        service.tasks.move(fromOffsets: indexes, toOffset: offset)
-//    }
-    
     private func addTodo() {
         viewModel.dispatch(.add("Type something in..."))
     }
@@ -67,15 +61,7 @@ struct TaskList_Previews: PreviewProvider {
         Group {
             TaskList(viewModel: .mock(state: .mock,
                                       action: { action, _, state in
-                                        switch action {
-                                            case let .toggle(id):
-                                                if let index = state.tasks.firstIndex(where: {$0.id == id}) {
-                                                    state.tasks[index].completed.toggle()
-                                                }
-
-                                            case let .remove(index): state.tasks.remove(atOffsets: index)
-                                            case let .add(title): print("Add task with title : \(title)")
-                                        }
+                                        state = Reducer.task.reduce(action, state)
                                       }
             )
             )

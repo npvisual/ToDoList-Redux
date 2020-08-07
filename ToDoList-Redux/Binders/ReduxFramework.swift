@@ -9,14 +9,9 @@ import Foundation
 
 import SwiftRex
 import LoggerMiddleware
+import CombineRex
 
 // MARK: - ACTIONS
-
-enum TaskAction {
-    case add(String)
-    case remove(IndexSet)
-    case toggle(String)
-}
 
 enum AppAction {
     case task(TaskAction)
@@ -24,25 +19,6 @@ enum AppAction {
 
 
 // MARK: - STATE
-
-struct TaskState: Equatable {
-    var title: String
-    var tasks: [Task]
-    
-    static var empty: TaskState {
-        .init(title: "Tasks", tasks: [])
-    }
-    
-    static var mock: TaskState {
-        .init(title: "Tasks", tasks: [
-            Task(title: "Implement UI", priority: .medium, completed: true),
-            Task(title: "Connect to Firebase", priority: .medium, completed: false),
-            Task(title: "????", priority: .high, completed: false),
-            Task(title: "PROFIT!!!", priority: .high, completed: false)
-        ]
-        )
-    }
-}
 
 struct AppState: Equatable {
     var appLifecycle: AppLifecycle
@@ -66,23 +42,6 @@ struct AppState: Equatable {
 
 
 // MARK: - REDUCERS
-
-extension Reducer where ActionType == TaskAction, StateType == TaskState {
-    static let task = Reducer { action, state in
-        var state = state
-        switch action {
-            case .add(let title):
-                state.tasks.append(Task(title: title, priority: .medium, completed: false))
-            case .remove(let offset):
-                state.tasks.remove(atOffsets: offset)
-            case .toggle(let id):
-                if let index = state.tasks.firstIndex(where: {$0.id == id}) {
-                    state.tasks[index].completed.toggle()
-                }
-        }
-        return state
-    }
-}
 
 extension Reducer where ActionType == AppAction, StateType == AppState {
     static let app = Reducer<TaskAction, TaskState>.task.lift(
@@ -140,3 +99,31 @@ extension AppAction {
     }
 }
 
+
+// MARK: - EXTENSIONS
+
+extension TaskList {
+    
+    static func viewModel<S: StoreType>(store: S) -> ObservableViewModel<TaskAction, TaskState>
+    where S.ActionType == AppAction, S.StateType == AppState {
+        store
+            .projection(action: Self.transform, state: Self.transform)
+            .asObservableViewModel(initialState: .empty)
+    }
+    
+    private static func transform(_ viewAction: TaskAction) -> AppAction? {
+        switch viewAction {
+            case let .add(title): return .task(.add(title))
+            case let .remove(offset): return .task(.remove(offset))
+            case let .move(offset, index): return .task(.move(offset, index))
+            case let .toggle(id): return .task(.toggle(id))
+        }
+    }
+    
+    private static func transform(from state: AppState) -> TaskState {
+        TaskState(
+            title: state.task.title,
+            tasks: state.task.tasks
+        )
+    }
+}

@@ -8,29 +8,57 @@
 import Foundation
 
 import SwiftRex
-import CombineRex
 
-extension TaskList {
+
+// MARK: - STATE
+
+struct TaskState: Equatable {
+    var title: String
+    var tasks: [Task]
     
-    static func viewModel<S: StoreType>(store: S) -> ObservableViewModel<TaskAction, TaskState>
-    where S.ActionType == AppAction, S.StateType == AppState {
-        store
-            .projection(action: Self.transform, state: Self.transform)
-            .asObservableViewModel(initialState: .empty)
+    static var empty: TaskState {
+        .init(title: "Tasks", tasks: [])
     }
     
-    private static func transform(_ viewAction: TaskAction) -> AppAction? {
-        switch viewAction {
-            case let .add(title): return .task(.add(title))
-            case let .remove(offset): return .task(.remove(offset))
-            case let .toggle(id): return .task(.toggle(id))
-        }
-    }
-    
-    private static func transform(from state: AppState) -> TaskState {
-        TaskState(
-            title: state.task.title,
-            tasks: state.task.tasks
+    static var mock: TaskState {
+        .init(title: "Tasks", tasks: [
+            Task(title: "Implement UI", priority: .medium, completed: true),
+            Task(title: "Connect to Firebase", priority: .medium, completed: false),
+            Task(title: "????", priority: .high, completed: false),
+            Task(title: "PROFIT!!!", priority: .high, completed: false)
+        ]
         )
+    }
+}
+
+
+// MARK: - ACTIONS
+
+enum TaskAction {
+    case add(String)
+    case remove(IndexSet)
+    case move(IndexSet, Int)
+    case toggle(String)
+}
+
+
+// MARK: - REDUCERS
+
+extension Reducer where ActionType == TaskAction, StateType == TaskState {
+    static let task = Reducer { action, state in
+        var state = state
+        switch action {
+            case let .add(title):
+                state.tasks.append(Task(title: title, priority: .medium, completed: false))
+            case let .remove(offset):
+                state.tasks.remove(atOffsets: offset)
+            case let .move(offset, index):
+                state.tasks.move(fromOffsets: offset, toOffset: index)
+            case let .toggle(id):
+                if let index = state.tasks.firstIndex(where: {$0.id == id}) {
+                    state.tasks[index].completed.toggle()
+                }
+        }
+        return state
     }
 }

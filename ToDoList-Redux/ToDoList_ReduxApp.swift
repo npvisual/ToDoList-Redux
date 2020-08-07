@@ -12,9 +12,8 @@ import CombineRex
 struct ToDoList_ReduxApp: App {
     
     private static let store = World.origin.store()
-    private static let viewModel = TaskList.viewModel(store: store)
     
-    @StateObject var taskViewModel = viewModel.asObservableViewModel(initialState: .mock)
+    @StateObject var taskViewModel = TaskList.viewModel(store: store)
     
     var body: some Scene {
         WindowGroup {
