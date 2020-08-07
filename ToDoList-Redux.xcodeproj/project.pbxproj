@@ -21,9 +21,9 @@
 		8E5B2B8D24DA4A0000B3C3A8 /* LoggerMiddleware in Frameworks */ = {isa = PBXBuildFile; productRef = 8E5B2B8C24DA4A0000B3C3A8 /* LoggerMiddleware */; };
 		8E5B2B8F24DA4D9700B3C3A8 /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5B2B8E24DA4D9700B3C3A8 /* TaskListViewModel.swift */; };
 		8EA052D024DB079B00BA0A07 /* TaskItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA052CF24DB079B00BA0A07 /* TaskItemViewModel.swift */; };
-		8ECAFD2024DB4DF700153719 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECAFD1F24DB4DF700153719 /* AppViewModel.swift */; };
 		8EE303FF24D85EB400DE03BC /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE303FE24D85EB400DE03BC /* TaskService.swift */; };
 		8EE3040224D8702A00DE03BC /* Indexing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE3040124D8702A00DE03BC /* Indexing.swift */; };
+		8EFB8B4D24DC9A2C00E5FDCE /* CombineRextensions in Frameworks */ = {isa = PBXBuildFile; productRef = 8EFB8B4C24DC9A2C00E5FDCE /* CombineRextensions */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +62,6 @@
 		8E5B2B8924DA194400B3C3A8 /* ReduxFramework.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReduxFramework.swift; sourceTree = "<group>"; };
 		8E5B2B8E24DA4D9700B3C3A8 /* TaskListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewModel.swift; sourceTree = "<group>"; };
 		8EA052CF24DB079B00BA0A07 /* TaskItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItemViewModel.swift; sourceTree = "<group>"; };
-		8ECAFD1F24DB4DF700153719 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		8EE303FE24D85EB400DE03BC /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
 		8EE3040124D8702A00DE03BC /* Indexing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indexing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +72,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E5B2B8D24DA4A0000B3C3A8 /* LoggerMiddleware in Frameworks */,
+				8EFB8B4D24DC9A2C00E5FDCE /* CombineRextensions in Frameworks */,
 				8E5B2B8824DA0EF300B3C3A8 /* CombineRex in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -178,7 +178,6 @@
 		8E2F82E724D38982007A6932 /* Binders */ = {
 			isa = PBXGroup;
 			children = (
-				8ECAFD1F24DB4DF700153719 /* AppViewModel.swift */,
 				8E5B2B8E24DA4D9700B3C3A8 /* TaskListViewModel.swift */,
 				8EA052CF24DB079B00BA0A07 /* TaskItemViewModel.swift */,
 			);
@@ -220,6 +219,7 @@
 			packageProductDependencies = (
 				8E5B2B8724DA0EF300B3C3A8 /* CombineRex */,
 				8E5B2B8C24DA4A0000B3C3A8 /* LoggerMiddleware */,
+				8EFB8B4C24DC9A2C00E5FDCE /* CombineRextensions */,
 			);
 			productName = "ToDoList-Redux";
 			productReference = 8E2F82B724D3895F007A6932 /* ToDoList-Redux.app */;
@@ -297,6 +297,7 @@
 			packageReferences = (
 				8E5B2B8624DA0EF300B3C3A8 /* XCRemoteSwiftPackageReference "SwiftRex" */,
 				8E5B2B8B24DA4A0000B3C3A8 /* XCRemoteSwiftPackageReference "LoggerMiddleware" */,
+				8EFB8B4B24DC9A2C00E5FDCE /* XCRemoteSwiftPackageReference "CombineRextensions" */,
 			);
 			productRefGroup = 8E2F82B824D3895F007A6932 /* Products */;
 			projectDirPath = "";
@@ -348,7 +349,6 @@
 				8E2F82BD24D3895F007A6932 /* ContentView.swift in Sources */,
 				8EA052D024DB079B00BA0A07 /* TaskItemViewModel.swift in Sources */,
 				8E5B2B8A24DA194400B3C3A8 /* ReduxFramework.swift in Sources */,
-				8ECAFD2024DB4DF700153719 /* AppViewModel.swift in Sources */,
 				8E2F82E924D389A4007A6932 /* Task.swift in Sources */,
 				8E2F82BB24D3895F007A6932 /* ToDoList_ReduxApp.swift in Sources */,
 			);
@@ -688,6 +688,14 @@
 				minimumVersion = 0.1.2;
 			};
 		};
+		8EFB8B4B24DC9A2C00E5FDCE /* XCRemoteSwiftPackageReference "CombineRextensions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftRex/CombineRextensions";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -700,6 +708,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8E5B2B8B24DA4A0000B3C3A8 /* XCRemoteSwiftPackageReference "LoggerMiddleware" */;
 			productName = LoggerMiddleware;
+		};
+		8EFB8B4C24DC9A2C00E5FDCE /* CombineRextensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EFB8B4B24DC9A2C00E5FDCE /* XCRemoteSwiftPackageReference "CombineRextensions" */;
+			productName = CombineRextensions;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

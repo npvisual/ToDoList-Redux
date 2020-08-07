@@ -10,16 +10,24 @@ import CombineRex
 
 struct TaskList: View {
     
-    @ObservedObject var viewModel: ObservableViewModel<TaskListViewModel.ViewEvent, TaskListViewModel.ViewState>
+    @ObservedObject var viewModel: ObservableViewModel<TaskListViewModel.Action, TaskListViewModel.State>
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
                 List {
-                    ForEach(self.viewModel.state.tasks, id: \.id) { (item: Task) in
-                        CheckmarkCellView(title: item.title,
-                                          imageName: item.completed ? "checkmark.circle.fill" : "circle") {
-                            viewModel.dispatch(.tapComplete(id: item.id))}
+                    ForEach(self.viewModel.state.tasks, id: \.id) { (item: Task) -> CheckmarkCellContainerView in
+                        let cellViewModel: ObservableViewModel<CheckmarkCellContainerView.Action, CheckmarkCellContainerView.State> = viewModel.projection(
+                            action: { viewaction in
+                                switch viewaction {
+                                    case .toggle: return .tapComplete(id: item.id)
+                                }
+                            },
+                            state: { state in
+                                CheckmarkCellContainerView.State(title: item.title,
+                                                                 imageName: item.completed ? "checkmark.circle.fill" : "circle")
+                            }).asObservableViewModel(initialState: CheckmarkCellContainerView.State(title: "", imageName: "circle"))
+                        return CheckmarkCellContainerView(viewModel: cellViewModel)
                     }
                     .onDelete(perform: delete)
 //                    .onMove(perform: move)
@@ -57,15 +65,20 @@ struct TaskList: View {
 struct TaskList_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            PreviewWrapper()
-        }
-    }
-    
-    struct PreviewWrapper: View {
-        @State var viewModel: ObservableViewModel = ObservableViewModel<TaskListViewModel.ViewEvent, TaskListViewModel.ViewState>.mock(state: TaskListViewModel.ViewState.mock)
-        
-        var body: some View {
-            TaskList(viewModel: viewModel)
+            TaskList(viewModel: .mock(state: TaskListViewModel.State.mock,
+                                      action: { action, _, state in
+                                        switch action {
+                                            case let .tapComplete(id: id):
+                                                if let index = state.tasks.firstIndex(where: {$0.id == id}) {
+                                                    state.tasks[index].completed.toggle()
+                                                }
+
+                                            case let .tapDelete(indexes: index): state.tasks.remove(atOffsets: index)
+                                            case let .tapAdd(title: title): print("Add task with title : \(title)")
+                                        }
+                                      }
+            )
+            )
         }
     }
 }

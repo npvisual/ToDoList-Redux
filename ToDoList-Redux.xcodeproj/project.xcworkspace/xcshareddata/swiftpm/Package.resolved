@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "CombineRextensions",
+        "repositoryURL": "https://github.com/SwiftRex/CombineRextensions",
+        "state": {
+          "branch": "master",
+          "revision": "b58f090167eb0c44944405978cd4ea2d400a0af0",
+          "version": null
+        }
+      },
+      {
         "package": "LoggerMiddleware",
         "repositoryURL": "https://github.com/SwiftRex/LoggerMiddleware",
         "state": {

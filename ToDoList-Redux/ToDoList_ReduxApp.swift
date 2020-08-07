@@ -10,8 +10,6 @@ import SwiftUI
 @main
 struct ToDoList_ReduxApp: App {
     
-//    @StateObject private var appViewModel = AppViewModel.viewModel(store: World.origin.store()).asObservableViewModel(initialState: .empty)
-
     private static let store = World.origin.store()
     private static let viewModel = TaskListViewModel.viewModel(store: store)
     

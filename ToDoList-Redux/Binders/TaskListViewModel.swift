@@ -11,13 +11,12 @@ import SwiftRex
 //extension TaskList {
 enum TaskListViewModel {
 
-    static func viewModel<S: StoreType>(store: S) -> StoreProjection<ViewEvent, ViewState>
-//    where S.ActionType == TaskAction, S.StateType == TaskState {
+    static func viewModel<S: StoreType>(store: S) -> StoreProjection<Action, State>
     where S.ActionType == AppAction, S.StateType == AppState {
-        store.projection(action: Self.handleViewEvent, state: Self.prepareViewState)
+        store.projection(action: Self.transform, state: Self.transform)
     }
     
-    static func handleViewEvent(_ viewEvent: ViewEvent) -> AppAction? {
+    private static func transform(_ viewEvent: Action) -> AppAction? {
         switch viewEvent {
             case .tapAdd(let title): return .task(.add(Task(title: title, priority: .low, completed: false)))
             case .tapDelete(let offset): return .task(.remove(offset))
@@ -25,8 +24,8 @@ enum TaskListViewModel {
         }
     }
     
-    static func prepareViewState(from state: AppState) -> ViewState {
-        ViewState(
+    private static func transform(from state: AppState) -> State {
+        State(
             title: state.task.title,
             tasks: state.task.tasks,
             newTaskButtonTitle: "New Task",
@@ -36,23 +35,23 @@ enum TaskListViewModel {
     
     // Having ViewEvents and ViewState is totally optional, but recommended to avoid Model in the ViewController
     // There's an extra effort to make a store projection, but at the same time gives a place to put UI formatting logic
-    enum ViewEvent {
+    enum Action {
         case tapAdd(title: String)
         case tapDelete(indexes: IndexSet)
         case tapComplete(id: String)
     }
     
-    struct ViewState: Equatable {
+    struct State: Equatable {
         let title: String
-        let tasks: [Task]
+        var tasks: [Task]
         let newTaskButtonTitle: String
         let newTaskButtonImage: String
         
-        static var empty: ViewState {
+        static var empty: State {
             .init(title: "Tasks", tasks: [], newTaskButtonTitle: "New Task", newTaskButtonImage: "plus.circle.fill")
         }
         
-        static var mock: ViewState {
+        static var mock: State {
             .init(title: "All Tasks",
                   tasks: [
                     Task(title: "Implement UI", priority: .medium, completed: true),
