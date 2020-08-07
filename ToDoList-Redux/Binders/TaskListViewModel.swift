@@ -9,7 +9,6 @@ import Foundation
 
 import SwiftRex
 
-
 // MARK: - STATE
 
 struct TaskState: Equatable {
@@ -31,7 +30,6 @@ struct TaskState: Equatable {
     }
 }
 
-
 // MARK: - ACTIONS
 
 enum TaskAction {
@@ -40,7 +38,6 @@ enum TaskAction {
     case move(IndexSet, Int)
     case toggle(String)
 }
-
 
 // MARK: - REDUCERS
 

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CombineRex
 
 @main
 struct ToDoList_ReduxApp: App {
