@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import CombineRex
 
 @main
 struct ToDoList_ReduxApp: App {
     
     private static let store = World.origin.store()
-    private static let viewModel = TaskListViewModel.viewModel(store: store)
+    private static let viewModel = TaskList.viewModel(store: store)
     
     @StateObject var taskViewModel = viewModel.asObservableViewModel(initialState: .mock)
     

@@ -8,13 +8,12 @@
 import Foundation
 
 import SwiftRex
-import CombineRex
 import LoggerMiddleware
 
 // MARK: - ACTIONS
 
 enum TaskAction {
-    case add(Task)
+    case add(String)
     case remove(IndexSet)
     case toggle(String)
 }
@@ -56,13 +55,13 @@ struct AppState: Equatable {
     static var mock: AppState {
         .init(appLifecycle: .backgroundInactive, task: .mock)
     }
-}
-
-enum AppLifecycle: Equatable {
-    case backgroundActive
-    case backgroundInactive
-    case foregroundActive
-    case foregroundInactive
+    
+    enum AppLifecycle: Equatable {
+        case backgroundActive
+        case backgroundInactive
+        case foregroundActive
+        case foregroundInactive
+    }
 }
 
 
@@ -72,8 +71,8 @@ extension Reducer where ActionType == TaskAction, StateType == TaskState {
     static let task = Reducer { action, state in
         var state = state
         switch action {
-            case .add(let task):
-                state.tasks.append(task)
+            case .add(let title):
+                state.tasks.append(Task(title: title, priority: .medium, completed: false))
             case .remove(let offset):
                 state.tasks.remove(atOffsets: offset)
             case .toggle(let id):

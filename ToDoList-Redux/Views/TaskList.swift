@@ -10,7 +10,7 @@ import CombineRex
 
 struct TaskList: View {
     
-    @ObservedObject var viewModel: ObservableViewModel<TaskListViewModel.Action, TaskListViewModel.State>
+    @ObservedObject var viewModel: ObservableViewModel<TaskAction, TaskState>
     
     var body: some View {
         NavigationView {
@@ -20,7 +20,7 @@ struct TaskList: View {
                         let cellViewModel: ObservableViewModel<CheckmarkCellContainerView.Action, CheckmarkCellContainerView.State> = viewModel.projection(
                             action: { viewaction in
                                 switch viewaction {
-                                    case .toggle: return .tapComplete(id: item.id)
+                                    case .toggle: return .toggle(item.id)
                                 }
                             },
                             state: { state in
@@ -49,7 +49,7 @@ struct TaskList: View {
     }
     
     private func delete(_ indexes: IndexSet) {
-        viewModel.dispatch(.tapDelete(indexes: indexes))
+        viewModel.dispatch(.remove(indexes))
     }
     
 //    private func move(_ indexes: IndexSet, to offset: Int) {
@@ -57,7 +57,7 @@ struct TaskList: View {
 //    }
     
     private func addTodo() {
-        viewModel.dispatch(.tapAdd(title: "Type something in..."))
+        viewModel.dispatch(.add("Type something in..."))
     }
 }
 
@@ -65,16 +65,16 @@ struct TaskList: View {
 struct TaskList_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TaskList(viewModel: .mock(state: TaskListViewModel.State.mock,
+            TaskList(viewModel: .mock(state: .mock,
                                       action: { action, _, state in
                                         switch action {
-                                            case let .tapComplete(id: id):
+                                            case let .toggle(id):
                                                 if let index = state.tasks.firstIndex(where: {$0.id == id}) {
                                                     state.tasks[index].completed.toggle()
                                                 }
 
-                                            case let .tapDelete(indexes: index): state.tasks.remove(atOffsets: index)
-                                            case let .tapAdd(title: title): print("Add task with title : \(title)")
+                                            case let .remove(index): state.tasks.remove(atOffsets: index)
+                                            case let .add(title): print("Add task with title : \(title)")
                                         }
                                       }
             )
