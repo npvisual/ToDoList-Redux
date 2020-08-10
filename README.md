@@ -15,7 +15,7 @@ So I used a fairly basic Task application to compare those different Swift Redux
 
 ## Iterations
 
-### 1. Container / Render View [(swiftrex-option1b)](https://github.com/npvisual/ToDoList-Redux/tree/swiftrex-option1b)
+### 1. First Redux Concepts [(swiftrex-option1b)](https://github.com/npvisual/ToDoList-Redux/tree/swiftrex-option1b)
 
 The first approach is based on a very light introduction of Redux and SwiftRex concepts : 
 
@@ -26,11 +26,27 @@ The first approach is based on a very light introduction of Redux and SwiftRex c
 
 You can find some great explanations from Luis [here](https://github.com/SwiftRex/SwiftRex/issues/67#issuecomment-669599677) on the different possible approaches I was going after.
 
-However, while this was a good first step toward what Luis described as "Option 1b", it still wasn't making much use of the Redux framework since it was directly tying the cell view into the ForEach of the TaskList.
+However, while this was a good first step, it was nowehre near what Luis described as "Option 1b", and it still wasn't making much use of the Redux framework since it was directly tying the cell view into the ForEach of the TaskList.
+
+### 2. Container / Rendering View [(swiftrex-containerview)](https://github.com/npvisual/ToDoList-Redux/tree/swiftrex-containerview)
+
+This iteration was my attempt to implement what Luis had described as "Option 1b" :
+
+* it creates an abstration level, i.e. the ["Container" concept](https://github.com/npvisual/ToDoList-Redux/blob/14db58edbaf79646845dfc7d3732b511f7163310/ToDoList-Redux/Views/CheckmarkCellView.swift#L28) that Majid described in [his post](https://swiftwithmajid.com/2019/10/02/redux-like-state-container-in-swiftui-part3/), between the actual view and the parent view. But with a little twist... by pushing the notion of State and Actions to that container,
+* it still leaves the [implementation](https://github.com/npvisual/ToDoList-Redux/blob/14db58edbaf79646845dfc7d3732b511f7163310/ToDoList-Redux/Views/CheckmarkCellView.swift#L11) of the Rendering View and puts the Container View in charge of doing the [data binding job](https://github.com/npvisual/ToDoList-Redux/blob/14db58edbaf79646845dfc7d3732b511f7163310/ToDoList-Redux/Views/CheckmarkCellView.swift#L42),
+* the Container View uses Combine's `@ObservedObject` to receive an `ObservableViewModel` from the calling View,
+* that now forces us to use a [projection](https://github.com/npvisual/ToDoList-Redux/blob/14db58edbaf79646845dfc7d3732b511f7163310/ToDoList-Redux/Views/TaskList.swift#L22) of our original view model -- we're a little more Redux-like.
+
+### 3. `ObservableViewModel` in the Rendering View itself [(swiftrex-observableviewmodel)](https://github.com/npvisual/ToDoList-Redux/tree/swiftrex-observableviewmodel)
+
+Another approach suggested by Luis was to integrate the View Model directly in the Rendering View (i.e. bypassing the Container View), while still keeping the View independent of any "higher level" Application Logic.
+
+While I didn't like this approach initially because the presence of the `ObservableViewModel` forces the creator of the Rendering View to know about this particular SwiftRex concept, it somewhat grew on me, because of its simplicity :
+
+* it uses an [extension of the Rendering View](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Binders/CheckmarkCellViewModel.swift#L12) to define the Redux-specific concepts,
+* it still leaves the Rendering View itself [very clean](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Views/CheckmarkCellView.swift#L13), when doing so...
+* the separation of (Redux) concerns in the [extension](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Binders/TaskListViewModel.swift#L13) (and [here](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Binders/ReduxFramework.swift#L105)) allows us to define more Redux-like concepts, like `projection`, at the appropriate layer ; see for example how the TaskList extension allows us to define a [projection](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Binders/TaskListViewModel.swift#L67) specifically for the `CheckmarkCellView` (i.e. abstracting that mapping logic where it makes sense),
+* it allows us to have a [fairly clean call](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Views/TaskList.swift#L23) from the parent View, because we've abstracted most of the binding logic out in the extensions.
 
 
-https://peterfriese.dev/replicating-reminder-swiftui-firebase-part1/
-https://swiftwithmajid.com/2019/09/04/modeling-app-state-using-store-objects-in-swiftui/
-https://swiftwithmajid.com/2019/07/31/introducing-container-views-in-swiftui/
-https://swiftwithmajid.com/2019/09/25/redux-like-state-container-in-swiftui-part2/
-https://swiftwithmajid.com/2019/10/02/redux-like-state-container-in-swiftui-part3/
+Now, a lot of the changes between #2 and #3 were purely cosmetic and a lot of the simplications introduced in #3 could have been made for `CheckmarkCellContainerView` as well. But we're slowly getting to what I consider a more "Redux-like" approach.
