@@ -14,7 +14,7 @@ import CombineRex
 // MARK: - ACTIONS
 
 enum AppAction {
-    case task(TaskAction)
+    case task(TaskList.Action)
 }
 
 
@@ -22,7 +22,7 @@ enum AppAction {
 
 struct AppState: Equatable {
     var appLifecycle: AppLifecycle
-    var task: TaskState
+    var task: TaskList.State
     
     static var empty: AppState {
         .init(appLifecycle: .backgroundInactive, task: .empty)
@@ -44,7 +44,7 @@ struct AppState: Equatable {
 // MARK: - REDUCERS
 
 extension Reducer where ActionType == AppAction, StateType == AppState {
-    static let app = Reducer<TaskAction, TaskState>.task.lift(
+    static let app = Reducer<TaskList.Action, TaskList.State>.task.lift(
         action: \AppAction.task,
         state: \AppState.task
     )
@@ -87,15 +87,15 @@ extension World {
 // MARK: - PRISM
 
 extension AppAction {
-    public var task: TaskAction? {
+    public var task: TaskList.Action? {
         get {
             guard case let .task(value) = self else { return nil }
             return value
         }
-//        set {
-//            guard case .task = self, let newValue = newValue else { return }
-//            self = .task(newValue)
-//        }
+        set {
+            guard case .task = self, let newValue = newValue else { return }
+            self = .task(newValue)
+        }
     }
 }
 
@@ -104,14 +104,14 @@ extension AppAction {
 
 extension TaskList {
     
-    static func viewModel<S: StoreType>(store: S) -> ObservableViewModel<TaskAction, TaskState>
+    static func viewModel<S: StoreType>(store: S) -> ObservableViewModel<TaskList.Action, TaskList.State>
     where S.ActionType == AppAction, S.StateType == AppState {
         store
             .projection(action: Self.transform, state: Self.transform)
             .asObservableViewModel(initialState: .empty)
     }
     
-    private static func transform(_ viewAction: TaskAction) -> AppAction? {
+    private static func transform(_ viewAction: TaskList.Action) -> AppAction? {
         switch viewAction {
             case let .add(title): return .task(.add(title))
             case let .remove(offset): return .task(.remove(offset))
@@ -120,8 +120,8 @@ extension TaskList {
         }
     }
     
-    private static func transform(from state: AppState) -> TaskState {
-        TaskState(
+    private static func transform(from state: AppState) -> TaskList.State {
+        TaskList.State(
             title: state.task.title,
             tasks: state.task.tasks
         )

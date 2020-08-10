@@ -6,54 +6,34 @@
 //
 
 import SwiftUI
+
+import SwiftRex
 import CombineRex
 
 struct CheckmarkCellView: View {
-    
-    let title: String
-    let imageName: String
-    let toggle: () -> Void
+
+    @ObservedObject var viewModel: ObservableViewModel<Action, State>
     
     var body: some View {
         HStack {
-            Image(systemName: imageName)
+            Image(systemName: viewModel.state.imageName)
                 .resizable()
                 .frame(width: 20, height: 20)
-                .onTapGesture(perform: toggle)
-            Text(title)
+                .onTapGesture { viewModel.dispatch(.toggle(viewModel.state.id))}
+            Text(viewModel.state.title)
         }
-    }
-}
-
-struct CheckmarkCellContainerView: View {
-    
-    struct State: Equatable {
-        let title: String
-        let imageName: String
-    }
-    
-    enum Action {
-        case toggle
-    }
-    
-    @ObservedObject var viewModel: ObservableViewModel<Action, State>
-
-    var body: some View {
-        CheckmarkCellView(
-            title: viewModel.state.title,
-            imageName: viewModel.state.imageName) { viewModel.dispatch(.toggle)}
     }
 }
 
 struct CheckmarkCellView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            CheckmarkCellView(title: "This is a new task",
-                              imageName: "circle",
-                              toggle: {})
-            CheckmarkCellView(title: "This is a completed task !",
-                              imageName: "checkmark.circle.fill",
-                              toggle: {})
+            CheckmarkCellView(viewModel: .mock(state: .mock,
+                                               action: { action, _, state in
+                                                state = Reducer.cell.reduce(action, state)
+                                               }
+            )
+            )
         }
         .previewLayout(.fixed(width: 300, height: 70))
     }

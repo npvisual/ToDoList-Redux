@@ -12,24 +12,15 @@ import CombineRex
 
 struct TaskList: View {
     
-    @ObservedObject var viewModel: ObservableViewModel<TaskAction, TaskState>
+    @ObservedObject var viewModel: ObservableViewModel<Action, State>
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
                 List {
-                    ForEach(self.viewModel.state.tasks, id: \.id) { (item: Task) -> CheckmarkCellContainerView in
-                        let cellViewModel: ObservableViewModel<CheckmarkCellContainerView.Action, CheckmarkCellContainerView.State> = viewModel.projection(
-                            action: { viewaction in
-                                switch viewaction {
-                                    case .toggle: return .toggle(item.id)
-                                }
-                            },
-                            state: { state in
-                                CheckmarkCellContainerView.State(title: item.title,
-                                                                 imageName: item.completed ? "checkmark.circle.fill" : "circle")
-                            }).asObservableViewModel(initialState: CheckmarkCellContainerView.State(title: "", imageName: "circle"))
-                        return CheckmarkCellContainerView(viewModel: cellViewModel)
+                    ForEach(self.viewModel.state.tasks, id: \.id) { (item: Task) -> CheckmarkCellView in
+                        let cellViewModel = CheckmarkCellView.viewModel(store: viewModel, taskId: item.id)
+                        return CheckmarkCellView(viewModel: cellViewModel)
                     }
                     .onDelete { viewModel.dispatch(.remove($0)) }
                     .onMove { viewModel.dispatch(.move($0, $1)) }
@@ -45,7 +36,7 @@ struct TaskList: View {
                 .padding()
                 .accentColor(Color(UIColor.systemRed))
             }
-            .navigationBarTitle("Tasks")
+            .navigationBarTitle(viewModel.state.title)
             .navigationBarItems(trailing: EditButton())
         }
     }
