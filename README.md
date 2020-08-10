@@ -50,3 +50,5 @@ While I didn't like this approach initially because the presence of the `Observa
 
 
 Now, a lot of the changes between #2 and #3 were purely cosmetic and a lot of the simplications introduced in #3 could have been made for `CheckmarkCellContainerView` as well. But we're slowly getting to what I consider a more "Redux-like" approach.
+
+Note : I am still a little confused about ["lift vs. projection"](https://github.com/SwiftRex/SwiftRex/issues/67#issuecomment-671418231) but the last iteration helped in understanding where projection comes in (notice that I have not made any additional use of `lift`, outside of the App level [reducer](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Binders/ReduxFramework.swift#L47)). Might do that in the next iteration.
