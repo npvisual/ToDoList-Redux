@@ -11,19 +11,16 @@ import SwiftRex
 import CombineRex
 
 struct TaskList: View {
-    
     @ObservedObject var viewModel: ObservableViewModel<Action, State>
+    let rowView: (String) -> CheckmarkCellView
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
                 List {
-                    ForEach(self.viewModel.state.tasks, id: \.id) { (item: Task) -> CheckmarkCellView in
-                        let cellViewModel = CheckmarkCellView.viewModel(store: viewModel, taskId: item.id)
-                        return CheckmarkCellView(viewModel: cellViewModel)
-                    }
-                    .onDelete { viewModel.dispatch(.remove($0)) }
-                    .onMove { viewModel.dispatch(.move($0, $1)) }
+                    ForEach(self.viewModel.state.tasks, id: \.id) { rowView($0.id) }
+                        .onDelete { viewModel.dispatch(.remove($0)) }
+                        .onMove { viewModel.dispatch(.move($0, $1)) }
                 }
                 Button(action: {}) {
                     HStack {
@@ -48,13 +45,20 @@ struct TaskList: View {
 
 #if DEBUG
 struct TaskList_Previews: PreviewProvider {
+    static let stateMock = AppState.mock
+    static let mockStore = ObservableViewModel<AppAction, AppState>.mock(
+        state: stateMock,
+        action: { action, _, state in
+            state = Reducer.app.reduce(action, state)
+        }
+    )
     static var previews: some View {
         Group {
-            TaskList(viewModel: .mock(state: .mock,
-                                      action: { action, _, state in
-                                        state = Reducer.task.reduce(action, state)
-                                      }
-            )
+            TaskList(
+                viewModel: TaskList.viewModel(
+                    store: mockStore.projection(action: AppAction.task, state: \AppState.tasks)
+                ),
+                rowView: { Router.taskListRowView(store: mockStore, taskId: $0) }
             )
         }
     }
