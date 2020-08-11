@@ -19,22 +19,32 @@ struct CheckmarkCellView: View {
             Image(systemName: viewModel.state.imageName)
                 .resizable()
                 .frame(width: 20, height: 20)
-                .onTapGesture { viewModel.dispatch(.toggle(viewModel.state.id))}
+                .onTapGesture { viewModel.dispatch(.toggle) }
             Text(viewModel.state.title)
         }
     }
 }
 
+#if DEBUG
 struct CheckmarkCellView_Previews: PreviewProvider {
+    static let stateMock = AppState.mock
+    static let mockStore = ObservableViewModel<AppAction, AppState>.mock(
+        state: stateMock,
+        action: { action, _, state in
+            state = Reducer.app.reduce(action, state)
+        }
+    )
     static var previews: some View {
         Group {
-            CheckmarkCellView(viewModel: .mock(state: .mock,
-                                               action: { action, _, state in
-                                                state = Reducer.cell.reduce(action, state)
-                                               }
-            )
+            CheckmarkCellView(
+                viewModel:
+                    CheckmarkCellView.viewModel(
+                        store: mockStore.projection(action: AppAction.task, state: \AppState.tasks),
+                        taskId: stateMock.tasks.first!.id
+                    )
             )
         }
         .previewLayout(.fixed(width: 300, height: 70))
     }
 }
+#endif
