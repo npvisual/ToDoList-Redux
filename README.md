@@ -178,3 +178,27 @@ extension Reducer where ActionType == TaskAction, StateType == [Task] {
     }
 }
 ```
+The final outcome is that we have a now much more streamlined View creation in the `ForEach` :
+
+```
+struct TaskList: View {
+    @ObservedObject var viewModel: ObservableViewModel<Action, State>
+    let rowView: (String) -> CheckmarkCellView
+    
+    var body: some View {
+        NavigationView {
+            VStack(alignment: .leading) {
+                List {
+                    ForEach(self.viewModel.state.tasks) { rowView($0.id) }
+                        .onDelete { viewModel.dispatch(.remove($0)) }
+                        .onMove { viewModel.dispatch(.move($0, $1)) }
+                }
+...
+```
+and we're probably just one step away from being able to abstract the return type of `rowView` to make `TaskList` completely generic (currently tied to `CheckmarkCellView`).
+
+#### More Actions
+
+We've also introduced some changes to the Actions :
+* we have a new `.update(String)` Action that is used with our new TextField. That gives us the ability to update the State when the user inputs or modifies the title of a Task.
+* the `.add` action doesn't need any parameter since we just create a new empty Task when the user clicks on the "+ New Task" button.
