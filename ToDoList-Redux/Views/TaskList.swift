@@ -18,7 +18,7 @@ struct TaskList: View {
         NavigationView {
             VStack(alignment: .leading) {
                 List {
-                    ForEach(self.viewModel.state.tasks, id: \.id) { rowView($0.id) }
+                    ForEach(self.viewModel.state.tasks) { rowView($0.id) }
                         .onDelete { viewModel.dispatch(.remove($0)) }
                         .onMove { viewModel.dispatch(.move($0, $1)) }
                 }
