@@ -52,3 +52,129 @@ While I didn't like this approach initially because the presence of the `Observa
 Now, a lot of the changes between #2 and #3 were purely cosmetic and a lot of the simplications introduced in #3 could have been made for `CheckmarkCellContainerView` as well. But we're slowly getting to what I consider a more "Redux-like" approach.
 
 Note : I am still a little confused about ["lift vs. projection"](https://github.com/SwiftRex/SwiftRex/issues/67#issuecomment-671418231) but the last iteration helped in understanding where projection comes in (notice that I have not made any additional use of `lift`, outside of the App level [reducer](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Binders/ReduxFramework.swift#L47)). Might do that in the next iteration.
+
+### 4. Router construct and precursor to ViewProducer [(swiftrex-router)](https://github.com/npvisual/ToDoList-Redux/tree/swiftrex-router)
+
+This next phase packs a lot of changes (most of them [provided](https://github.com/npvisual/ToDoList-Redux/pull/1) by Luiz).
+
+#### Router
+Overall, at the App level, those changes are introducing a new concept : the Router. It's a set of static functions that provide Views, given the global store.
+
+```
+import SwiftRex
+struct Router {
+    static func taskListView<S: StoreType>(store: S) -> TaskList
+    where S.StateType == AppState, S.ActionType == AppAction {
+        TaskList(
+            viewModel: TaskList.viewModel(store: store.projection(action: AppAction.list, state: \AppState.tasks)),
+            rowView: { id in taskListRowView(store: store, taskId: id) }
+        )
+    }
+
+    static func taskListRowView<S: StoreType>(store: S, taskId: String) -> CheckmarkCellView
+    where S.StateType == AppState, S.ActionType == AppAction {
+        CheckmarkCellView(
+            viewModel: CheckmarkCellView.viewModel(
+                store: store.projection(action: AppAction.task, state: \AppState.tasks),
+                taskId: taskId
+            )
+        )
+    }
+}
+```
+This is slowly taking us toward the ViewProducer concept that Luiz [mentioned](https://github.com/SwiftRex/SwiftRex/issues/67#issuecomment-670441016) a little while ago. This is important because it now allows us to "direct" the traffic via `taskListView` and `taskListRowView` directly from the global Store.
+
+So the state, that was somehow stored at the view model level, was moved back where it should have been all along : at the top of the Application, in AppState.
+
+```
+struct AppState: Equatable {
+    var appLifecycle: AppLifecycle
+    var tasks: [Task]  
+...
+}
+```
+
+So projections, which are view / context specific, can be utilized as a "reduced" domain of expertise for each view.
+
+#### Item abstraction
+
+The other important change was the use of a "generic" Item in the `TaskList` (which we could certainly have renamged `ItemList` as it is becoming more and more generic). In essence the view model for `TaskList` is really only concerned about IDs and that's it -- because the actual binding of cell-specific values to the cell elements are handled outside, thanks to the Router.
+
+```
+    struct State: Equatable {
+        var title: String
+        var tasks: [Item]
+    ...    
+    }
+```
+
+It also allowed us to split list-related actions and task-related actions,
+
+```
+enum AppAction {
+    case appLifecycle(AppLifecycleAction)
+    case list(ListAction)
+    case task(TaskAction)
+}
+
+enum ListAction {
+    case add
+    case remove(IndexSet)
+    case move(IndexSet, Int)
+}
+
+enum TaskAction {
+    case toggle(String)
+    case update(String, String)
+}
+```
+
+as well as break down the Reducers into their respective areas of expertise so we can compose the App Reducer from them all :
+
+```
+extension Reducer where ActionType == AppAction, StateType == AppState {
+    static let app =
+        Reducer<TaskAction, [Task]>.task.lift(
+            action: \AppAction.task,
+            state: \AppState.tasks
+        ) <> Reducer<ListAction, [Task]>.list.lift(
+            action: \AppAction.list,
+            state: \AppState.tasks
+        ) <> Reducer<AppLifecycleAction, AppLifecycle>.lifecycle.lift(
+            action: \AppAction.appLifecycle,
+            state: \AppState.appLifecycle
+        )
+}
+
+extension Reducer where ActionType == ListAction, StateType == [Task] {
+    static let list = Reducer { action, state in
+        var state = state
+        switch action {
+            case .add:
+                state.append(Task(title: "", priority: .medium, completed: false))
+            case let .remove(offset):
+                state.remove(atOffsets: offset)
+            case let .move(offset, index):
+                state.move(fromOffsets: offset, toOffset: index)
+        }
+        return state
+    }
+}
+
+extension Reducer where ActionType == TaskAction, StateType == [Task] {
+    static let task = Reducer { action, state in
+        var state = state
+        switch action {
+            case let .toggle(id):
+                if let index = state.firstIndex(where: { $0.id == id }) {
+                    state[index].completed.toggle()
+                }
+            case let .update(id, title):
+                if let index = state.firstIndex(where: { $0.id == id }) {
+                    state[index].title = title
+                }
+        }
+        return state
+    }
+}
+```
