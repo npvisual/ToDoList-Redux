@@ -23,7 +23,7 @@ struct Router {
     static func taskListView<S: StoreType>(store: S) -> TaskList
     where S.StateType == AppState, S.ActionType == AppAction {
         TaskList(
-            viewModel: TaskList.viewModel(store: store.projection(action: AppAction.task, state: \AppState.tasks)),
+            viewModel: TaskList.viewModel(store: store.projection(action: AppAction.list, state: \AppState.tasks)),
             rowView: { id in taskListRowView(store: store, taskId: id) }
         )
     }

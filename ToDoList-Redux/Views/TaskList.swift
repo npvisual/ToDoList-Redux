@@ -52,7 +52,7 @@ struct TaskList_Previews: PreviewProvider {
         Group {
             TaskList(
                 viewModel: TaskList.viewModel(
-                    store: mockStore.projection(action: AppAction.task, state: \AppState.tasks)
+                    store: mockStore.projection(action: AppAction.list, state: \AppState.tasks)
                 ),
                 rowView: { Router.taskListRowView(store: mockStore, taskId: $0) }
             )

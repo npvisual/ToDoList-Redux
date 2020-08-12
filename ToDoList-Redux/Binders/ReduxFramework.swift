@@ -15,13 +15,17 @@ import CombineRex
 
 enum AppAction {
     case appLifecycle(AppLifecycleAction)
+    case list(ListAction)
     case task(TaskAction)
 }
 
-enum TaskAction {
+enum ListAction {
     case add
     case remove(IndexSet)
     case move(IndexSet, Int)
+}
+
+enum TaskAction {
     case toggle(String)
     case update(String, String)
 }
@@ -57,14 +61,17 @@ extension Reducer where ActionType == AppAction, StateType == AppState {
         Reducer<TaskAction, [Task]>.task.lift(
             action: \AppAction.task,
             state: \AppState.tasks
+        ) <> Reducer<ListAction, [Task]>.list.lift(
+            action: \AppAction.list,
+            state: \AppState.tasks
         ) <> Reducer<AppLifecycleAction, AppLifecycle>.lifecycle.lift(
             action: \AppAction.appLifecycle,
             state: \AppState.appLifecycle
         )
 }
 
-extension Reducer where ActionType == TaskAction, StateType == [Task] {
-    static let task = Reducer { action, state in
+extension Reducer where ActionType == ListAction, StateType == [Task] {
+    static let list = Reducer { action, state in
         var state = state
         switch action {
             case .add:
@@ -73,6 +80,15 @@ extension Reducer where ActionType == TaskAction, StateType == [Task] {
                 state.remove(atOffsets: offset)
             case let .move(offset, index):
                 state.move(fromOffsets: offset, toOffset: index)
+        }
+        return state
+    }
+}
+
+extension Reducer where ActionType == TaskAction, StateType == [Task] {
+    static let task = Reducer { action, state in
+        var state = state
+        switch action {
             case let .toggle(id):
                 if let index = state.firstIndex(where: { $0.id == id }) {
                     state[index].completed.toggle()
@@ -85,7 +101,6 @@ extension Reducer where ActionType == TaskAction, StateType == [Task] {
         return state
     }
 }
-
 
 // MARK: - MIDDLEWARE
 
@@ -128,13 +143,13 @@ extension World {
 
 extension TaskList {
     static func viewModel<S: StoreType>(store: S) -> ObservableViewModel<TaskList.Action, TaskList.State>
-    where S.ActionType == TaskAction, S.StateType == [Task] {
+    where S.ActionType == ListAction, S.StateType == [Task] {
         store
             .projection(action: Self.transform, state: Self.transform)
             .asObservableViewModel(initialState: .empty)
     }
     
-    private static func transform(_ viewAction: TaskList.Action) -> TaskAction? {
+    private static func transform(_ viewAction: TaskList.Action) -> ListAction? {
         switch viewAction {
             case .add: return .add
             case let .remove(offset): return .remove(offset)

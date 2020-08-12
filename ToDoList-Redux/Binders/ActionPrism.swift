@@ -29,6 +29,23 @@ extension AppAction {
 }
 
 extension AppAction {
+    public var list: ListAction? {
+        get {
+            guard case let .list(value) = self else { return nil }
+            return value
+        }
+        set {
+            guard case .list = self, let newValue = newValue else { return }
+            self = .list(newValue)
+        }
+    }
+    
+    public var isList: Bool {
+        self.list != nil
+    }
+}
+
+extension AppAction {
     public var appLifecycle: AppLifecycleAction? {
         get {
             guard case let .appLifecycle(value) = self else { return nil }
