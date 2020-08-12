@@ -7,20 +7,19 @@
 
 import Foundation
 
-import SwiftRex
-
 extension CheckmarkCellView {
     // MARK: - STATE
     struct State: Equatable {
         let title: String
         let imageName: String
 
-        static var empty = State(title: "Type to create a new task...",
+        static var empty = State(title: "",
                                  imageName: "circle")
     }
 
     // MARK: - ACTIONS
     enum Action {
         case toggle
+        case update(String)
     }
 }

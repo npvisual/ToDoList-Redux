@@ -22,7 +22,7 @@ struct TaskList: View {
                         .onDelete { viewModel.dispatch(.remove($0)) }
                         .onMove { viewModel.dispatch(.move($0, $1)) }
                 }
-                Button(action: {}) {
+                Button(action: { viewModel.dispatch(.add) }) {
                     HStack {
                         Image(systemName: "plus.circle.fill")
                             .resizable()
@@ -36,10 +36,6 @@ struct TaskList: View {
             .navigationBarTitle(viewModel.state.title)
             .navigationBarItems(trailing: EditButton())
         }
-    }
-    
-    private func addTodo() {
-        viewModel.dispatch(.add("Type something in..."))
     }
 }
 

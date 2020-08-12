@@ -9,6 +9,7 @@ import SwiftUI
 
 import SwiftRex
 import CombineRex
+import CombineRextensions
 
 struct CheckmarkCellView: View {
 
@@ -20,7 +21,7 @@ struct CheckmarkCellView: View {
                 .resizable()
                 .frame(width: 20, height: 20)
                 .onTapGesture { viewModel.dispatch(.toggle) }
-            Text(viewModel.state.title)
+            TextField("Enter task here...", text: viewModel.binding[\.title] { Action.update($0)}) 
         }
     }
 }

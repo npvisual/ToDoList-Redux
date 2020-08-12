@@ -19,10 +19,11 @@ enum AppAction {
 }
 
 enum TaskAction {
-    case add(String)
+    case add
     case remove(IndexSet)
     case move(IndexSet, Int)
     case toggle(String)
+    case update(String, String)
 }
 
 // MARK: - STATE
@@ -51,7 +52,6 @@ struct AppState: Equatable {
 
 // MARK: - REDUCERS
 
-
 extension Reducer where ActionType == AppAction, StateType == AppState {
     static let app =
         Reducer<TaskAction, [Task]>.task.lift(
@@ -61,6 +61,29 @@ extension Reducer where ActionType == AppAction, StateType == AppState {
             action: \AppAction.appLifecycle,
             state: \AppState.appLifecycle
         )
+}
+
+extension Reducer where ActionType == TaskAction, StateType == [Task] {
+    static let task = Reducer { action, state in
+        var state = state
+        switch action {
+            case .add:
+                state.append(Task(title: "", priority: .medium, completed: false))
+            case let .remove(offset):
+                state.remove(atOffsets: offset)
+            case let .move(offset, index):
+                state.move(fromOffsets: offset, toOffset: index)
+            case let .toggle(id):
+                if let index = state.firstIndex(where: { $0.id == id }) {
+                    state[index].completed.toggle()
+                }
+            case let .update(id, title):
+                if let index = state.firstIndex(where: { $0.id == id }) {
+                    state[index].title = title
+                }
+        }
+        return state
+    }
 }
 
 
@@ -101,7 +124,7 @@ extension World {
     )
 }
 
-// MARK: - EXTENSIONS
+// MARK: - PROJECTIONS
 
 extension TaskList {
     static func viewModel<S: StoreType>(store: S) -> ObservableViewModel<TaskList.Action, TaskList.State>
@@ -113,7 +136,7 @@ extension TaskList {
     
     private static func transform(_ viewAction: TaskList.Action) -> TaskAction? {
         switch viewAction {
-            case let .add(title): return .add(title)
+            case .add: return .add
             case let .remove(offset): return .remove(offset)
             case let .move(offset, index): return .move(offset, index)
         }
@@ -123,6 +146,33 @@ extension TaskList {
         TaskList.State(
             title: "Tasks",
             tasks: state.map { State.Item(id: $0.id) }
+        )
+    }
+}
+
+extension CheckmarkCellView {
+    static func viewModel<S: StoreType>(store: S, taskId: String) -> ObservableViewModel<CheckmarkCellView.Action, CheckmarkCellView.State>
+    where S.ActionType == TaskAction, S.StateType == [Task] {
+        let task = store.mapState { state in state.first { $0.id == taskId } }
+        return task
+            .projection(action: Self.transform(taskId: taskId), state: Self.transform)
+            .asObservableViewModel(initialState: .empty)
+    }
+    
+    static func transform(taskId: String) -> (CheckmarkCellView.Action) -> TaskAction? {
+        return { viewAction in
+            switch viewAction {
+                case .toggle: return .toggle(taskId)
+                case let .update(title): return .update(taskId, title)
+            }
+        }
+    }
+    
+    static func transform(from state: Task?) -> CheckmarkCellView.State {
+        guard let state = state else { return CheckmarkCellView.State.empty }
+        return CheckmarkCellView.State(
+            title: state.title,
+            imageName: state.completed ? "checkmark.circle.fill" : "circle"
         )
     }
 }
