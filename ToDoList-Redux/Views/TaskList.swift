@@ -9,16 +9,17 @@ import SwiftUI
 
 import SwiftRex
 import CombineRex
+import CombineRextensions
 
 struct TaskList: View {
     @ObservedObject var viewModel: ObservableViewModel<Action, State>
-    let rowView: (String) -> CheckmarkCellView
+    let rowProducer: ViewProducer<String, CheckmarkCellView>
     
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
                 List {
-                    ForEach(self.viewModel.state.tasks) { rowView($0.id) }
+                    ForEach(self.viewModel.state.tasks) { rowProducer.view($0.id) }
                         .onDelete { viewModel.dispatch(.remove($0)) }
                         .onMove { viewModel.dispatch(.move($0, $1)) }
                 }
@@ -54,7 +55,7 @@ struct TaskList_Previews: PreviewProvider {
                 viewModel: TaskList.viewModel(
                     store: mockStore.projection(action: AppAction.list, state: \AppState.tasks)
                 ),
-                rowView: { Router.taskListRowView(store: mockStore, taskId: $0) }
+                rowProducer: ViewProducers.checkmarkCell(store: mockStore)
             )
         }
     }
