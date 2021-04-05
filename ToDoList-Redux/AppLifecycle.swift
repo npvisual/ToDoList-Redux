@@ -25,27 +25,27 @@ enum AppLifecycle: Equatable {
 }
 
 extension Reducer where ActionType == AppLifecycleAction, StateType == AppLifecycle {
-    static let lifecycle = Reducer { action, state in
+    static let lifecycle = Reducer.reduce { action, state in
         switch (state, action) {
-        case (.backgroundActive, .didEnterBackground): return state
-        case (.backgroundInactive, .didEnterBackground): return state
-        case (.foregroundActive, .didEnterBackground): return .backgroundActive
-        case (.foregroundInactive, .didEnterBackground): return .backgroundInactive
+        case (.backgroundActive, .didEnterBackground): break
+        case (.backgroundInactive, .didEnterBackground): break
+        case (.foregroundActive, .didEnterBackground): state = .backgroundActive
+        case (.foregroundInactive, .didEnterBackground): state = .backgroundInactive
 
-        case (.backgroundActive, .willEnterForeground): return .foregroundActive
-        case (.backgroundInactive, .willEnterForeground): return .foregroundInactive
-        case (.foregroundActive, .willEnterForeground): return state
-        case (.foregroundInactive, .willEnterForeground): return state
+        case (.backgroundActive, .willEnterForeground): state = .foregroundActive
+        case (.backgroundInactive, .willEnterForeground): state = .foregroundInactive
+        case (.foregroundActive, .willEnterForeground): break
+        case (.foregroundInactive, .willEnterForeground): break
 
-        case (.backgroundActive, .didBecomeActive): return state
-        case (.backgroundInactive, .didBecomeActive): return .backgroundActive
-        case (.foregroundActive, .didBecomeActive): return state
-        case (.foregroundInactive, .didBecomeActive): return .foregroundActive
+        case (.backgroundActive, .didBecomeActive): break
+        case (.backgroundInactive, .didBecomeActive): state = .backgroundActive
+        case (.foregroundActive, .didBecomeActive): break
+        case (.foregroundInactive, .didBecomeActive): state = .foregroundActive
 
-        case (.backgroundActive, .willBecomeInactive): return .backgroundInactive
-        case (.backgroundInactive, .willBecomeInactive): return state
-        case (.foregroundActive, .willBecomeInactive): return .foregroundInactive
-        case (.foregroundInactive, .willBecomeInactive): return state
+        case (.backgroundActive, .willBecomeInactive): state = .backgroundInactive
+        case (.backgroundInactive, .willBecomeInactive): break
+        case (.foregroundActive, .willBecomeInactive): state = .foregroundInactive
+        case (.foregroundInactive, .willBecomeInactive): break
         }
     }
 }

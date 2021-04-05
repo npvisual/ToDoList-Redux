@@ -46,7 +46,7 @@ struct TaskList_Previews: PreviewProvider {
     static let mockStore = ObservableViewModel<AppAction, AppState>.mock(
         state: stateMock,
         action: { action, _, state in
-            state = Reducer.app.reduce(action, state)
+            Reducer.app.reduce(action, &state)
         }
     )
     static var previews: some View {
