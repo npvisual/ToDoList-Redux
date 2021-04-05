@@ -71,8 +71,7 @@ extension Reducer where ActionType == AppAction, StateType == AppState {
 }
 
 extension Reducer where ActionType == ListAction, StateType == [Task] {
-    static let list = Reducer { action, state in
-        var state = state
+    static let list = Reducer.reduce { action, state in
         switch action {
             case .add:
                 state.append(Task(title: "", priority: .medium, completed: false))
@@ -81,13 +80,11 @@ extension Reducer where ActionType == ListAction, StateType == [Task] {
             case let .move(offset, index):
                 state.move(fromOffsets: offset, toOffset: index)
         }
-        return state
     }
 }
 
 extension Reducer where ActionType == TaskAction, StateType == [Task] {
-    static let task = Reducer { action, state in
-        var state = state
+    static let task = Reducer.reduce { action, state in
         switch action {
             case let .toggle(id):
                 if let index = state.firstIndex(where: { $0.id == id }) {
@@ -98,19 +95,21 @@ extension Reducer where ActionType == TaskAction, StateType == [Task] {
                     state[index].title = title
                 }
         }
-        return state
     }
 }
 
 // MARK: - MIDDLEWARE
 
-let appMiddleware =
-    IdentityMiddleware<AppAction, AppAction, AppState>().logger()
-    <> AppLifecycleMiddleware().lift(
-        inputActionMap: { _ in nil },
-        outputActionMap: AppAction.appLifecycle,
-        stateMap: { _ in }
-    )
+let appMiddleware = [
+    IdentityMiddleware<AppAction, AppAction, AppState>()
+        .logger()
+        .eraseToAnyMiddleware(),
+    AppLifecycleMiddleware().lift(
+        inputAction: { _ in nil },
+        outputAction: AppAction.appLifecycle,
+        state: { _ in }
+    ).eraseToAnyMiddleware()
+].reduce(ComposedMiddleware<AppAction, AppAction, AppState>(), <>)
 
 // MARK: - STORE
 
