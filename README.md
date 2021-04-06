@@ -13,6 +13,14 @@ As I was going through the evaluation of the different Swift Redux frameworks, I
 
 So I used a fairly basic Task application to compare those different Swift Redux framework. I initially started reading about [how to model app state using Store object](https://swiftwithmajid.com/2019/09/04/modeling-app-state-using-store-objects-in-swiftui/) using `ObservableObject`. Thanks to some really good reading from [Peter Friese](https://peterfriese.dev/replicating-reminder-swiftui-firebase-part1/) and [Majid Jabrayilov](https://swiftwithmajid.com/2019/07/31/introducing-container-views-in-swiftui/), I settled on a design for the initial Task application (read those links if you want to learn more about the different designs).
 
+Jump directly to what interests you : 
+- [Iterations](#iterations)
+    - [First Redux Concepts](#1-first-redux-concepts-swiftrex-option1b)
+    - [Container / Rendering View](#2-container--rendering-view-swiftrex-containerview)
+    - [`ObservableViewModel` in the Rendering View](#3-observableviewmodel-in-the-rendering-view-itself-swiftrex-observableviewmodel)
+    - [Router construct and precursor to ViewProducer](#4-router-construct-and-precursor-to-viewproducer-swiftrex-router)
+- [Questions](#questions)
+
 ## Iterations
 
 ### 1. First Redux Concepts [(swiftrex-option1b)](https://github.com/npvisual/ToDoList-Redux/tree/swiftrex-option1b)
@@ -202,3 +210,11 @@ and we're probably just one step away from being able to abstract the return typ
 We've also introduced some changes to the Actions :
 * we have a new `.update(String)` Action that is used with our new TextField. That gives us the ability to update the State when the user inputs or modifies the title of a Task.
 * the `.add` action doesn't need any parameter since we just create a new empty Task when the user clicks on the "+ New Task" button.
+
+## Questions
+
+While those were marked as resolved, there are several interesting questions that were asked, or derived work that was produced, in the course of making this demo application :
+- [Error when instantiating view models](https://github.com/npvisual/ToDoList-Redux/issues/2)
+- [State, Actions and Reducers](https://github.com/npvisual/ToDoList-Redux/issues/2#issuecomment-678271198)
+- @rustproofFish's [persisted ToDo list with Redux](https://github.com/rustproofFish/SwiftRex-ToDo-Persisted/)
+
