@@ -49,7 +49,7 @@ While I didn't like this approach initially because the presence of the `Observa
 * it allows us to have a [fairly clean call](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Views/TaskList.swift#L23) from the parent View, because we've abstracted most of the binding logic out in the extensions.
 
 
-Now, a lot of the changes between #2 and #3 were purely cosmetic and a lot of the simplications introduced in #3 could have been made for `CheckmarkCellContainerView` as well. But we're slowly getting to what I consider a more "Redux-like" approach.
+Now, a lot of the changes between #2 and #3 were purely cosmetic and a lot of the simplifications introduced in #3 could have been made for `CheckmarkCellContainerView` as well. But we're slowly getting to what I consider a more "Redux-like" approach.
 
 Note : I am still a little confused about ["lift vs. projection"](https://github.com/SwiftRex/SwiftRex/issues/67#issuecomment-671418231) but the last iteration helped in understanding where projection comes in (notice that I have not made any additional use of `lift`, outside of the App level [reducer](https://github.com/npvisual/ToDoList-Redux/blob/d630c425c1a3cbfb0b58b0b3609b7bf4d464d12f/ToDoList-Redux/Binders/ReduxFramework.swift#L47)). Might do that in the next iteration.
 
@@ -60,7 +60,7 @@ This next phase packs a lot of changes (most of them [provided](https://github.c
 #### Router
 Overall, at the App level, those changes are introducing a new concept : the Router. It's a set of static functions that provide Views, given the global store.
 
-```
+```swift
 import SwiftRex
 struct Router {
     static func taskListView<S: StoreType>(store: S) -> TaskList
@@ -86,7 +86,7 @@ This is slowly taking us toward the ViewProducer concept that Luiz [mentioned](h
 
 So the state, that was somehow stored at the view model level, was moved back where it should have been all along : at the top of the Application, in AppState.
 
-```
+```swift
 struct AppState: Equatable {
     var appLifecycle: AppLifecycle
     var tasks: [Task]  
@@ -100,7 +100,7 @@ So projections, which are view / context specific, can be utilized as a "reduced
 
 The other important change was the use of a "generic" Item in the `TaskList` (which we could certainly have renamged `ItemList` as it is becoming more and more generic). In essence the view model for `TaskList` is really only concerned about IDs and that's it -- because the actual binding of cell-specific values to the cell elements are handled outside, thanks to the Router.
 
-```
+```swift
     struct State: Equatable {
         var title: String
         var tasks: [Item]
@@ -110,7 +110,7 @@ The other important change was the use of a "generic" Item in the `TaskList` (wh
 
 It also allowed us to split list-related actions and task-related actions,
 
-```
+```swift
 enum AppAction {
     case appLifecycle(AppLifecycleAction)
     case list(ListAction)
@@ -131,7 +131,7 @@ enum TaskAction {
 
 as well as break down the Reducers into their respective areas of expertise so we can compose the App Reducer from them all :
 
-```
+```swift
 extension Reducer where ActionType == AppAction, StateType == AppState {
     static let app =
         Reducer<TaskAction, [Task]>.task.lift(
@@ -180,7 +180,7 @@ extension Reducer where ActionType == TaskAction, StateType == [Task] {
 ```
 The final outcome is that we have a now much more streamlined View creation in the `ForEach` :
 
-```
+```swift
 struct TaskList: View {
     @ObservedObject var viewModel: ObservableViewModel<Action, State>
     let rowView: (String) -> CheckmarkCellView
